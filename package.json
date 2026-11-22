@@ -1,6 +1,6 @@
 {
   "name": "dsh-lean-router",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "lean 省 token × 思考链路由 × code_run 工具遮蔽 × mattpocock 技能自动调用的 DSH cordis 插件（单 bundle：预设+配套技能）",
   "type": "module",
   "main": "lib/index.js",

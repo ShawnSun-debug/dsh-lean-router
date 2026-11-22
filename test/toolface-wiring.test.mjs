@@ -92,7 +92,7 @@ async function harness(config = {}, { globalScope = false, noDelegate = false } 
   if (!globalScope) ctx[SCOPE_TAG] = keys.preset;
   const options = { ...config };
   if (!noDelegate) options.createDelegate = config.createDelegate ?? (() => delegate);
-  await apply(ctx, options);
+  assert.equal(await apply(ctx, options), undefined, 'apply must not return a plain object (cordis "Invalid effect")');
   const describeFor = (scope = keys.agent) => executor.describe(visibleLayersFor(keys, scope).flatMap(l => LAYERS[l]).map(n => DEFINITIONS.get(n)));
   return { registered, logs, forwarded, ctx, keys, executor, describeFor, delegate };
 }

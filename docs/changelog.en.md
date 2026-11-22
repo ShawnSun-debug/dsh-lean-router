@@ -1,6 +1,11 @@
 # Changelog
 
-> English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.0).
+> English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.2).
+
+## 1.0.2 (2026-11-22)
+
+- Fix (fatal on a real host): `lib/lean/tool-concurrency.js` had `apply()` return a plain object; cordis validates an apply's return value as an effect and accepts only a dispose function / null / undefined / thenable, so the host threw `Invalid effect` — the plugin showed as "error" and the `preset-lean-router` row declared after it in the same overlay was never registered (only balance appeared in the preset list).
+- Add: one "apply's return value must satisfy the cordis effect contract" assertion in each of the `tool-concurrency` / `delivery-gate` / `router` / `toolface` suites.
 
 ## 1.0.1 (2026-11-22)
 

@@ -108,7 +108,9 @@ test('默认插件导出：apply 走同一 install 路径（config.toolConcurren
       effect(factory) { disposer = factory(); },
     };
     const r = m.default.apply(ctx, { toolConcurrency: { sweepMs: 1000 } });
-    assert.equal(r.installed, true);
+    // cordis effect 契约：apply 返回值只能是 dispose 函数 / null / undefined / thenable。
+    // 返回普通对象会 TypeError("Invalid effect")，真宿主标红「异常」（1.0.1 实测）。
+    assert.equal(r, undefined, 'apply must not return a plain object (cordis "Invalid effect")');
     assert.equal(globalDefs.glob.isConcurrencySafe({ pattern: '*' }), true);
     if (disposer) disposer();
   });

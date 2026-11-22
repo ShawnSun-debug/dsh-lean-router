@@ -26,7 +26,7 @@ test('section：关闭态返回空串（装配时被丢掉），开启态返回�
     delete process.env.DSH_DELIVERY_GATE;
     let captured = null;
     const ctx = { systemPrompt: { section: (s) => { captured = s; } }, effect() {} };
-    m.apply(ctx, {});
+    assert.equal(m.apply(ctx, {}), undefined, 'apply must not return a plain object (cordis "Invalid effect")');
     assert.equal(captured.text(), '', '关闭时一个字都不注入（上游 L217-229）');
     assert.equal(captured.name, 'lean-delivery-gate');
     assert.equal(captured.order, 42);

@@ -1,6 +1,11 @@
 # 变更记录（changelog）
 
-> 中文为主，英文版：[changelog.en.md](./changelog.en.md)。版本号遵循 package.json（当前 1.0.0）。
+> 中文为主，英文版：[changelog.en.md](./changelog.en.md)。版本号遵循 package.json（当前 1.0.2）。
+
+## 1.0.2 (2026-11-22)
+
+- 修复（真机致命）：`lib/lean/tool-concurrency.js` 的 `apply()` 返回了普通对象；cordis 的 effect 校验只接受 dispose 函数 / null / undefined / thenable，于是真宿主抛 `Invalid effect` —— 插件列表标红「异常」，且同一 overlay 里排在它之后的 `preset-lean-router` 行不再注册（预设列表只剩 balance）。
+- 新增：`tool-concurrency` / `delivery-gate` / `router` / `toolface` 四套测试各加一条「apply 返回值必须满足 cordis effect 契约」断言，防回归。
 
 ## 1.0.1 (2026-11-22)
 

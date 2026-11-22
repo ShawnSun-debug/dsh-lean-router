@@ -20,7 +20,7 @@ dsh plugin --profile desktop add "link:D:\path\to\dsh-lean-router"
 ### 路径 B：npm 安装（发布后可用）
 
 ~~~powershell
-dsh plugin --profile desktop add npm:dsh-lean-router@1.0.1
+dsh plugin --profile desktop add npm:dsh-lean-router@1.0.2
 ~~~
 
 （两条路径与 scripts/install.mjs 输出的说明一致；真安装器、认领边界与 `--uninstall` 回滚归票 09。）

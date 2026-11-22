@@ -67,7 +67,7 @@ const agentB = { session: {} };
 
 async function routedSetup(options) {
   const { ctx, handlers, contexts, commands } = makeCtx(fakeSkills());
-  apply(ctx, options);
+  assert.equal(apply(ctx, options), undefined, 'apply must not return a plain object (cordis "Invalid effect")');
   return { ctx, handlers, contexts, commands };
 }
 
