@@ -6,7 +6,7 @@ A DeepSeek Harness (DSH) cordis plugin tuned for DeepSeek V4.1 Flash: **one plug
 
 > This package documents bilingually with the **"Chinese default + English `.en.md` files"** scheme: Chinese is the first language (README.md and docs/*.md), English lives in same-directory `.en.md` files (this file ↔ [README.md](./README.md)). All three upstream projects follow the same "Chinese README + README.en.md" convention.
 
-> Status: **v1.0.0** (tickets 02-06 all accepted + master integration done; the audit panel, ticket 07, is **in flight**; publishing, ticket 09, pending).
+> Status: **v1.0.0 published** (npm: [dsh-lean-router](https://www.npmjs.com/package/dsh-lean-router) · GitHub Release [v1.0.0](https://github.com/ShawnSun-debug/dsh-lean-router/releases/tag/v1.0.0) · CI green; remaining manual step: real-machine DSH profile install smoke, see [docs/release-checklist.md](docs/release-checklist.md)).
 
 ## Layers at a glance
 

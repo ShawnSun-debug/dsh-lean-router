@@ -6,7 +6,7 @@
 
 > 本包双语文档采用 **「中文默认 + 英文 `.en.md` 独立文件」** 方案：中文是第一语言（README.md 与 docs/*.md），英文版同目录 `.en.md`（本文件 ↔ [README.en.md](./README.en.md)）。三个上游项目也遵循「中文 README + README.en.md」惯例。
 
-> 状态：**v1.0.0**（t1–t10 全验收完成；发布准备就绪——npm publish / git push / GitHub Release 按 [docs/release-checklist.md](docs/release-checklist.md) 手动执行）。
+> 状态：**v1.0.0 已发布**（npm：[dsh-lean-router](https://www.npmjs.com/package/dsh-lean-router) · GitHub Release [v1.0.0](https://github.com/ShawnSun-debug/dsh-lean-router/releases/tag/v1.0.0) · CI 绿；剩余人工项：DSH profile 真机安装冒烟，见 [docs/release-checklist.md](docs/release-checklist.md)）。
 
 ## 功能一图
 

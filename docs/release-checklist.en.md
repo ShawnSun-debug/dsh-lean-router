@@ -1,3 +1,13 @@
+
+## Execution record (2026-11-22)
+
+- ✅ npm publish `dsh-lean-router@1.0.0` done (bypass-2FA granular token; verify with `npm view dsh-lean-router@1.0.0`)
+- ✅ `git push` done (remote `ShawnSun-debug/dsh-lean-router`, main @ d3ffe1d)
+- ✅ GitHub Release `v1.0.0` created
+- ✅ CI green after fixing `npm test` to `node --test "test/*.test.mjs"` (directory arg breaks on Node 24)
+- ⚠️ registry still lists npm's auto-generated placeholder `0.0.0-stage` (latest points to 1.0.0; deletion requires web UI + OTP, safe to ignore)
+- ⏳ Remaining manual step: real-machine DSH profile install smoke
+
 # Release checklist · dsh-lean-router v1.0.0
 
 > Owner-manual steps only. The release subagent must **never** run `npm publish`, `npm login` or `git push` (ledger constraints/forbidden).
