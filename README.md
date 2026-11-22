@@ -6,7 +6,7 @@
 
 > 本包双语文档采用 **「中文默认 + 英文 `.en.md` 独立文件」** 方案：中文是第一语言（README.md 与 docs/*.md），英文版同目录 `.en.md`（本文件 ↔ [README.en.md](./README.en.md)）。三个上游项目也遵循「中文 README + README.en.md」惯例。
 
-> 状态：**v1.0.0**（六票 02–06 全验收 + master 集成完成；audit 面板票 07 **进行中**，发布票 09 待做）。
+> 状态：**v1.0.0**（t1–t10 全验收完成；发布准备就绪——npm publish / git push / GitHub Release 按 [docs/release-checklist.md](docs/release-checklist.md) 手动执行）。
 
 ## 功能一图
 
