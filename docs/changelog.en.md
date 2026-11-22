@@ -4,6 +4,7 @@
 
 ## 1.0.4 (2026-11-22)
 
+- New (skills panel, stage 1): client plugin skeleton - a "Skills" button in the session header plus a placeholder overlay panel (`lib/client.js`, `dsh.client.platform=web`, `exports['./client']`). The loading contract follows dsh's `window.__ModuleLoader__.load({ id, factory })`, UI registration goes through `ctx.slots.register`, and the panel is portalled onto `body` so it never depends on a sidebar. Stage 1 only proves the wiring; real data and one-click workflows arrive in later versions.
 - Improved (visibility): `/band` output goes from three lines of plain English to a scannable layout - a one-line status first (e.g. `▲ react · 已按首条消息分类，关键词不再改带 · 可选 spec / react / weak`), a band comparison table in the middle (the current band marked `**▲ spec**` in bold), and "the last automatic classification" with its evidence (build/fix hit counts plus the matched words) at the end.
 - New: `lib/bands.js` exports `explainClassification(text)`, returning the band, both hit counts and up to three matched words; `classifyTask` is now a thin wrapper over it, so results are identical to 1.0.3.
 - New: the routing state gains `manual` and `last` fields, telling "explicitly set / auto-classified from the first message / not classified yet" apart. The near-field guide text is unchanged (the zero-write contract still holds).
