@@ -1,6 +1,12 @@
 # Changelog
 
-> English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.2).
+> English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.3).
+
+## 1.0.3 (2026-11-22)
+
+- Fix (fatal on a real host): the preset's plugins list wrongly carried the **host-level service plugin** `ptc-runtime` (`@deepseek-ai/dsh-ptc-runtime-node`). A preset activates in its own scope, so mounting that service twice fails → `agentPresets.register` throws → the whole `preset-lean-router` is never registered (observed: only balance was listed). The host already mounts the row in `dsh-base/cordis.patch.yml` L407-408, and `code_run`'s `ctx.get('ptcRuntime')` resolves upward, so the preset must not declare it.
+- Change: the `frag-preset` union drops from 22 to 21 rows (overrides 20 + toolface); `cordis.patch.yml` rebuilt.
+- Add: `integration-preset` and `patch-yaml` now assert `ptc-runtime` never appears inside a preset.
 
 ## 1.0.2 (2026-11-22)
 

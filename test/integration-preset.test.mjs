@@ -28,10 +28,11 @@ function suffixBlock(text) {
 
 test('frag-preset 是 preset 行唯一生效 owner：21 行并集、无重复、toolface 收尾', () => {
   const ids = frag.split(/\r?\n/).filter(l => /^      - id: /.test(l)).map(l => /^      - id: (.+)$/.exec(l)[1].trim());
-  assert.equal(ids.length, 22, '并集行数 = 覆写块 20 + ptc-runtime（master 补挂）+ toolface');
+  assert.equal(ids.length, 21, '并集行数 = 覆写块 20 + toolface（ptc-runtime 属宿主层，不进 preset）');
   assert.equal(new Set(ids).size, ids.length, '无重复 id');
   assert.equal(ids[ids.length - 1], 'toolface', 'toolface 最后（遮蔽面与 preset 同行生效）');
-  for (const id of ['persona', 'agent-instructions', 'skill-filesystem', 'skill-lean-router', 'planning', 'compaction', 'delegation', 'tool-todo', 'tool-web', 'present', 'ptc-runtime', 'toolface']) {
+  assert.ok(!ids.includes('ptc-runtime'), 'ptc-runtime 由宿主 dsh-base 挂载，放进 preset 会让整条 preset 激活失败（1.0.3 事故回归）');
+  for (const id of ['persona', 'agent-instructions', 'skill-filesystem', 'skill-lean-router', 'planning', 'compaction', 'delegation', 'tool-todo', 'tool-web', 'present', 'toolface']) {
     assert.ok(ids.includes(id), '缺行: ' + id);
   }
   assert.ok(!ids.includes('preset-lean-router-balance'), 'balance 是独立行，不在并集行 id 内');

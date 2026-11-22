@@ -67,14 +67,12 @@ for (let i = sufIdx + 1; i < pr.length; i++) {
 }
 const newPersona = pr.slice(0, sufIdx + 1).concat(composed.split('\n').map(l => (l.length ? contentIndent + l : '')));
 
-// 5) 并集 = 覆写块全部行（persona 换 composed）+ master 补挂行 + toolface 行收尾
-// ptc-runtime 行：宿主 dsh-base/cordis.patch.yml L407-408 同款（0.2.2-rc.5 实读）；
-// codemode 上游补丁不带此行，而 code_run 的 transport.js:221-224 依赖 ctx.get('ptcRuntime') 服务，
-// 缺行会在运行时兜底报错——由 master 集成补挂（票 08 open_question 5 裁定）。
-const extraRows = [
-  { id: 'ptc-runtime', text: ['      - id: ptc-runtime', "      name: '@deepseek-ai/dsh-ptc-runtime-node'", ''] },
-];
-const unionRows = ovRows.map(r => (r.id === 'persona' ? { id: 'persona', text: newPersona } : r)).concat(extraRows).concat([toolfaceRow]);
+// 5) 并集 = 覆写块全部行（persona 换 composed）+ toolface 行收尾
+// 不挂 ptc-runtime（1.0.3 实测修正）：官方已在宿主层 dsh-base/cordis.patch.yml L407-408 挂过
+// 这个服务插件；preset 是独立 scope，再挂一次会激活失败，导致整条 preset 不注册
+// （现象：lean-router 从预设列表整体消失，只剩 balance）。code_run 的 transport 依赖的
+// ctx.get('ptcRuntime') 会向宿主层查找，preset 内无需重复声明。
+const unionRows = ovRows.map(r => (r.id === 'persona' ? { id: 'persona', text: newPersona } : r)).concat([toolfaceRow]);
 const ids = unionRows.map(r => r.id);
 if (new Set(ids).size !== ids.length) throw new Error('并集行 id 重复: ' + ids.join(','));
 if (ids[ids.length - 1] !== 'toolface') throw new Error('toolface 行必须收尾');

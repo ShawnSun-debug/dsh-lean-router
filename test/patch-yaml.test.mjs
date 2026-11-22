@@ -35,12 +35,11 @@ test("全部 presets/base 补丁片段可解析", () => {
   }
 });
 
-test("ptc-runtime 行缩进正确（1.0.0 事故回归）", () => {
+test("ptc-runtime 是宿主层插件，不得出现在 preset 内（1.0.3 事故回归）", () => {
   const doc = parseFile(join(root, "presets", "base", "frag-preset.patch.yml"));
   assert.ok(Array.isArray(doc), "frag 是裸行数组");
   const preset = doc.find((p) => p.id === "preset-lean-router");
   assert.ok(preset, "preset 行存在");
   const row = preset.config.plugins.find((p) => p.id === "ptc-runtime");
-  assert.ok(row, "ptc-runtime 行必须作为合法列表项被解析出来");
-  assert.equal(row.name, "@deepseek-ai/dsh-ptc-runtime-node");
+  assert.equal(row, undefined, "ptc-runtime 由宿主 dsh-base/cordis.patch.yml 挂载；放进 preset 会让整条 preset 激活失败、从预设列表消失");
 });

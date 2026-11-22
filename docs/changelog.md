@@ -1,6 +1,12 @@
 # 变更记录（changelog）
 
-> 中文为主，英文版：[changelog.en.md](./changelog.en.md)。版本号遵循 package.json（当前 1.0.2）。
+> 中文为主，英文版：[changelog.en.md](./changelog.en.md)。版本号遵循 package.json（当前 1.0.3）。
+
+## 1.0.3 (2026-11-22)
+
+- 修复（真机致命）：preset 的 plugins 列表里误挂了**宿主层服务插件** `ptc-runtime`（`@deepseek-ai/dsh-ptc-runtime-node`）。dsh 的 preset 在独立 scope 里激活，重复挂载该服务会失败 → `agentPresets.register` 抛错 → 整条 `preset-lean-router` 不注册（真机现象：预设列表只剩 balance）。该行本就由宿主 `dsh-base/cordis.patch.yml` L407-408 挂载，`code_run` 依赖的 `ctx.get('ptcRuntime')` 会向宿主层查找，preset 内无需重复声明。
+- 变更：`frag-preset` 并集行 22 → 21（覆写块 20 + toolface），`cordis.patch.yml` 同步重建。
+- 新增回归：`integration-preset` 与 `patch-yaml` 两处断言 preset 内不得出现 `ptc-runtime`。
 
 ## 1.0.2 (2026-11-22)
 

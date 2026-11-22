@@ -20,7 +20,7 @@ After restarting DSH, pick the **Lean router** preset (lean tier) or **Lean rout
 ### Path B: npm install (once published)
 
 ~~~powershell
-dsh plugin --profile desktop add npm:dsh-lean-router@1.0.2
+dsh plugin --profile desktop add npm:dsh-lean-router@1.0.3
 ~~~
 
 (Both paths match the output of scripts/install.mjs; the real installer, claim boundaries and `--uninstall` rollback belong to ticket 09.)

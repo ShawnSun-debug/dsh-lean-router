@@ -818,9 +818,6 @@
 
 # ============ 新增行：preset-lean-router-balance（balance 档 3 条；上游双预设形态，flash-lean-ptc-v3-balance 同构）============
 
-      - id: ptc-runtime
-        name: '@deepseek-ai/dsh-ptc-runtime-node'
-
       - id: toolface
         name: 'dsh-lean-router/toolface'
         config:
