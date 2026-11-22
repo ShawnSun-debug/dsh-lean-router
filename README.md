@@ -29,7 +29,7 @@ engines：`>=0.2.1-rc.5 <0.2.3-0`（实测基线 0.2.2-rc.5）。DSH 处于 deve
 
 ~~~powershell
 dsh plugin --profile desktop add "link:D:\path\to\dsh-lean-router"
-# 发布后：dsh plugin --profile desktop add npm:dsh-lean-router@1.0.0
+# 发布后：dsh plugin --profile desktop add npm:dsh-lean-router@1.0.1
 ~~~
 
 依赖 `@deepseek-ai/dsh-tool-executor-native`；缺失时工具遮蔽层不静默——executor stub 首次 `describe` 抛出含安装指引的错误（lib/toolface/executor.js L57-63），按提示 `npm install` 或用 `dsh plugin add` 重装即可。

@@ -177,7 +177,7 @@ test('missing native dependency: apply still mounts (stub executor with install 
   // No createDelegate and no nativeModule: loadNativeExecutorModule() fails in
   // the repo sandbox, apply logs a warn and mounts the install-hint stub. The
   // module load itself must not fail - that is the whole point.
-  const h = await harness({}, { noDelegate: true });
+  const h = await harness({ nativeModuleSpecifier: 'dsh-lean-router/__missing_native_executor__' }, { noDelegate: true });
   assert.equal(h.registered.length, 5, 'tools registered regardless of the dependency');
   assert.ok(h.executor, 'the executor is still mounted (stub)');
   assert.throws(() => h.executor.describe([{ name: 'pwsh' }]), /dsh-tool-executor-native/);

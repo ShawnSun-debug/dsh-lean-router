@@ -29,7 +29,7 @@ Not published yet; start with a local link (both paths in [docs/quickstart.en.md
 
 ~~~powershell
 dsh plugin --profile desktop add "link:D:\path\to\dsh-lean-router"
-# once published: dsh plugin --profile desktop add npm:dsh-lean-router@1.0.0
+# once published: dsh plugin --profile desktop add npm:dsh-lean-router@1.0.1
 ~~~
 
 The package depends on `@deepseek-ai/dsh-tool-executor-native`; if missing, the masking layer fails loudly — the executor stub throws an error with install guidance on the first `describe` (lib/toolface/executor.js L57-63). Follow it with `npm install` or re-add via `dsh plugin add`.

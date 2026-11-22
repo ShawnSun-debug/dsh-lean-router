@@ -2,6 +2,13 @@
 
 > English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.0).
 
+## 1.0.1 (2026-11-22)
+
+- Fix: `cordis.patch.yml` had a mis-indented `ptc-runtime` row (dsh refused to parse the overlay; installs rolled back).
+- Fix: `npm test` uses `node --test "test/*.test.mjs"` (directory argument breaks on Node 24).
+- Add: regression test parses every patch with js-yaml and the `!!js` tag, matching dsh's overlay loader.
+- Chore: js-yaml added as a devDependency; version references bumped.
+
 ## v1.0.0 (2026-11-21)
 
 All six layers of one plugin card have landed (tickets 02-06 delivered + master integration); the audit panel (ticket 07) is in flight and the real installer (ticket 09) is pending.

@@ -9,7 +9,7 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 test("package.json 骨架字段", async () => {
   const pkg = JSON.parse(await readFile(join(ROOT, "package.json"), "utf8"));
   assert.equal(pkg.name, "dsh-lean-router");
-  assert.equal(pkg.version, "1.0.0");
+  assert.match(pkg.version, /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/);
   assert.equal(pkg.license, "MIT");
   assert.equal(pkg.type, "module");
   assert.equal(pkg.main, "lib/index.js");

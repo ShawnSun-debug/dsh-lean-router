@@ -2,6 +2,13 @@
 
 > 中文为主，英文版：[changelog.en.md](./changelog.en.md)。版本号遵循 package.json（当前 1.0.0）。
 
+## 1.0.1 (2026-11-22)
+
+- 修复：`cordis.patch.yml` 里 `ptc-runtime` 行缩进错误（dsh 解析 overlay 失败、安装被回滚）。
+- 修复：`npm test` 改为 `node --test "test/*.test.mjs"`（目录参数在 Node 24 报错）。
+- 新增：回归测试用 js-yaml + `!!js` 标签解析全部补丁，对齐 dsh 的 overlay 装载器。
+- 杂项：js-yaml 加入 devDependencies；版本引用更新。
+
 ## v1.0.0（2026-11-21）
 
 一张插件卡六个层全部落地（票 02–06 交付 + master 集成），audit 面板（票 07）进行中、真安装器（票 09）待做。

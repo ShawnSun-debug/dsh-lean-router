@@ -177,10 +177,9 @@ test('missing dependency: the stub delegate raises the install hint on first cal
 });
 
 test('missing dependency: loadNativeExecutorModule rejects instead of breaking the import', async () => {
-  await assert.rejects(() => loadNativeExecutorModule(), (error) => {
-    // In the repo sandbox the dependency is genuinely absent; any rejection
-    // proves the load is lazy (no top-level static import would have thrown
-    // while importing this module - the tests above already imported it fine).
+  // Deterministic: point the lazy loader at a specifier that cannot resolve
+  // (the real dependency is installed once node_modules exists).
+  await assert.rejects(() => loadNativeExecutorModule('dsh-lean-router/__missing_native_executor__'), (error) => {
     assert.ok(error instanceof Error);
     return true;
   });
