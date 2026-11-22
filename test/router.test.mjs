@@ -185,7 +185,11 @@ test("/band：显示/改档/auto 回退/非法值报错", async () => {
   // 无参显示
   const shown = band.handler({ agent: agentA, rawInput: "" });
   assert.equal(shown.kind, "success");
-  assert.ok(shown.text.includes("auto (unset"));
+  assert.ok(shown.text.includes("▲ auto"), "第一行必须是一行状态");
+  assert.ok(shown.text.includes("| 档位 |"), "三带差异必须用表格展示");
+  assert.ok(shown.text.includes("最近一次自动分类：暂无"), "没有用户消息时给出明确说明");
+  assert.ok(shown.text.includes("下一条消息自动分类"), "未分类时来源说明为自动");
+  assert.ok(shown.text.includes("**▲ auto**"), "当前档位在表格里用 ▲ 粗体标记");
   // 改档
   const set = band.handler({ agent: agentA, rawInput: "react task = 发布 MVP" });
   assert.equal(set.kind, "success");

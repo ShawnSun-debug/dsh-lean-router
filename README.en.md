@@ -6,7 +6,7 @@ A DeepSeek Harness (DSH) cordis plugin tuned for DeepSeek V4.1 Flash: **one plug
 
 > This package documents bilingually with the **"Chinese default + English `.en.md` files"** scheme: Chinese is the first language (README.md and docs/*.md), English lives in same-directory `.en.md` files (this file ↔ [README.md](./README.md)). All three upstream projects follow the same "Chinese README + README.en.md" convention.
 
-> Status: **v1.0.3 published** (npm: [dsh-lean-router](https://www.npmjs.com/package/dsh-lean-router) · GitHub Release [v1.0.2](https://github.com/ShawnSun-debug/dsh-lean-router/releases/tag/v1.0.3) · CI green; real-machine DSH profile install smoke record: [docs/release-checklist.md](docs/release-checklist.md)).
+> Status: **v1.0.4 published** (npm: [dsh-lean-router](https://www.npmjs.com/package/dsh-lean-router) · GitHub Release [v1.0.4](https://github.com/ShawnSun-debug/dsh-lean-router/releases/tag/v1.0.4) · CI green; real-machine DSH profile install smoke record: [docs/release-checklist.md](docs/release-checklist.md)).
 
 ## Layers at a glance
 
@@ -29,7 +29,7 @@ Not published yet; start with a local link (both paths in [docs/quickstart.en.md
 
 ~~~powershell
 dsh plugin --profile desktop add "link:D:\path\to\dsh-lean-router"
-# once published: dsh plugin --profile desktop add npm:dsh-lean-router@1.0.3
+# once published: dsh plugin --profile desktop add npm:dsh-lean-router@1.0.4
 ~~~
 
 The package depends on `@deepseek-ai/dsh-tool-executor-native`; if missing, the masking layer fails loudly — the executor stub throws an error with install guidance on the first `describe` (lib/toolface/executor.js L57-63). Follow it with `npm install` or re-add via `dsh plugin add`.

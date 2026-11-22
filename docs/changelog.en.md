@@ -1,6 +1,14 @@
 # Changelog
 
-> English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.3).
+> English version of [changelog.md](./changelog.md). Versions follow package.json (currently 1.0.4).
+
+## 1.0.4 (2026-11-22)
+
+- Improved (visibility): `/band` output goes from three lines of plain English to a scannable layout - a one-line status first (e.g. `▲ react · 已按首条消息分类，关键词不再改带 · 可选 spec / react / weak`), a band comparison table in the middle (the current band marked `**▲ spec**` in bold), and "the last automatic classification" with its evidence (build/fix hit counts plus the matched words) at the end.
+- New: `lib/bands.js` exports `explainClassification(text)`, returning the band, both hit counts and up to three matched words; `classifyTask` is now a thin wrapper over it, so results are identical to 1.0.3.
+- New: the routing state gains `manual` and `last` fields, telling "explicitly set / auto-classified from the first message / not classified yet" apart. The near-field guide text is unchanged (the zero-write contract still holds).
+- Change: `/band` with no arguments now equals `/band help` and prints the status panel; the set confirmation changes from `Router band set to x.` to `▲ x · 已切换`.
+- Tests: the `/band` assertions now check "first line is the status / the band table exists / the current band is bold ▲ / a clear note when no message has arrived"; 203 tests green.
 
 ## 1.0.3 (2026-11-22)
 
