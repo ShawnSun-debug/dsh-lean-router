@@ -37,7 +37,7 @@
     "dsh": ">=0.2.1-rc.5 <0.2.3-0"
   },
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test \"test/*.test.mjs\"",
     "build": "node scripts/build-bundle.mjs",
     "drift": "node scripts/check-drift.mjs",
     "doctor": "node scripts/doctor.mjs",
