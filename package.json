@@ -1,0 +1,65 @@
+{
+  "name": "dsh-lean-router",
+  "version": "1.0.0",
+  "description": "lean 省 token × 思考链路由 × code_run 工具遮蔽 × mattpocock 技能自动调用的 DSH cordis 插件（单 bundle：预设+配套技能）",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json",
+    "./router": "./lib/router.js",
+    "./toolface": "./lib/toolface/index.js",
+    "./lean/delivery-gate": "./lib/lean/delivery-gate.js",
+    "./lean/tool-concurrency": "./lib/lean/tool-concurrency.js"
+  },
+  "files": [
+    "lib",
+    "presets",
+    "assets",
+    "ui",
+    "docs",
+    "skills.manifest.json",
+    "cordis.patch.yml",
+    "scripts",
+    "test",
+    "README.md",
+    "README.en.md",
+    "NOTICE.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "author": "ShawnSun-debug",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShawnSun-Debug/dsh-lean-router.git"
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.5 <0.2.3-0"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "build": "node scripts/build-bundle.mjs",
+    "drift": "node scripts/check-drift.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "keywords": [
+    "dsh",
+    "agent-preset",
+    "lean",
+    "router",
+    "codemode",
+    "skills"
+  ],
+  "dependencies": {
+    "@deepseek-ai/dsh-tool-executor-native": "^0.2.2-alpha.3"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.1.0"
+  }
+}

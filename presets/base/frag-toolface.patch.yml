@@ -1,0 +1,75 @@
+# dsh-lean-router frag-toolface.patch.yml — 票 04 工具遮蔽层
+# 由 scripts/build-bundle.mjs 拼在 presets/base/lean-router.patch.yml 之后（顶层列表续项）。
+# 形态与上游 dsh-codemode 0.3.x 样本一致（cordis patch 顶层 "- <op>:" 列表；本分片为
+# 键级 override 操作，参照上游 fixtures/verify-host-codemode.patch.yml 的 "- id: tools" 形态）。
+#
+# cordis patch override 是「键级整体替换」（target[key] = value），预设行不是 group、
+# 无法向 plugins 数组增量插入，因此本分片把 preset-lean-router 的 config.plugins
+# 整快照重声明：base 全部行原样保留 + 追加 toolface 行。
+# 防漂移：test/toolface-wiring.test.mjs 校验本分片行集合 = base 模板行集合 + toolface。
+# 集成注意：票 03/05 若也需改 preset 行（persona suffix、加行），与本分片是同一接缝，
+# 由 master 统一裁决（最终可把 toolface 行并入 base 模板、本分片只留校验）。
+- id: preset-lean-router
+  config:
+    plugins:
+      - id: persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: You are a coding agent powered by the {{model}} model.
+          # 骨架占位原样保留：lean 纪律与路由分类指令由票 03/05 填充
+          suffix: |-
+            - （骨架占位：lean 纪律与路由分类指令由票 03/05 填充，安装前请勿使用本预设）
+      - id: agent-instructions
+        name: '@deepseek-ai/dsh-agent-instructions'
+        config:
+          maxBytes: 65536
+      - id: tool-bash
+        name: '@deepseek-ai/dsh-tool-bash'
+        disabled: !!js process.platform === 'win32'
+      - id: tool-pwsh
+        name: '@deepseek-ai/dsh-tool-pwsh'
+        disabled: !!js process.platform !== 'win32'
+      - id: tool-fs
+        name: '@deepseek-ai/dsh-tool-fs'
+      - id: tool-fs-search
+        name: '@deepseek-ai/dsh-tool-fs-search'
+      - id: tool-jobs
+        name: '@deepseek-ai/dsh-tool-jobs'
+      - id: skill-filesystem
+        name: '@deepseek-ai/dsh-skill-filesystem'
+      - id: skill-lean-router
+        name: dsh-lean-router
+      - id: tool-skill
+        name: '@deepseek-ai/dsh-tool-skill'
+      - id: command-goal
+        name: '@deepseek-ai/dsh-command-goal'
+      - id: tool-goal
+        name: '@deepseek-ai/dsh-tool-goal'
+      - id: toolface
+        name: 'dsh-lean-router/toolface'
+        config:
+          # 与上游 dsh-codemode 0.3.x 的 codemode 行同形（默认值显式写出）
+          # 遮蔽名前缀：MCP 工具名 mcp__server__tool
+          hiddenPrefixes:
+            - 'mcp__'
+          # 预设自身清单之外的工具（全局层 MCP/bundle、agent 层工具集）一律遮蔽
+          nativeScope: true
+          nativeTools: []
+          hiddenTools: []
+          # 传输工具名：run_code 为 DSH 保留名，注册表拒绝注册，故用 code_run
+          runToolName: code_run
+          # 发现工具（仅可从程序内部调用）
+          metaTools:
+            - code_tools_list
+            - code_tools_search
+            - code_tools_describe
+            - code_debug
+          searchLimit: 8
+          maxDescriptionChars: 240
+          # 一个程序的最大并发子调用
+          maxParallelSubCalls: 10
+          # 拒绝模型直呼被遮蔽名（派发前），并以 Code Mode 段替换 tools:sdk
+          guard: true
+          sdkSection: true
+          # code_debug 保留最近的装配决策
+          debug: true

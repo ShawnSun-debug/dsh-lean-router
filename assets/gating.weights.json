@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "sceneMap": {
+    "react": { "engineering": 2, "process": 1 },
+    "spec": { "engineering": 2, "research": 1 },
+    "weak": {}
+  },
+  "complexBoost": { "engineering": 1 },
+  "autoScore": 2,
+  "hintScore": 1,
+  "tokenBudget": 8000,
+  "charsPerToken": 4
+}

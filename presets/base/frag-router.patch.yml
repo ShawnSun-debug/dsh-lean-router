@@ -1,0 +1,20 @@
+# dsh-lean-router 票 05 路由层分片（顶层列表续项；由 scripts/build-bundle.mjs 续接进 cordis.patch.yml）
+# 钩子行：agent/inbox/claimed 首轮捕获 + 近场引导 dynamic context + 勤勉自检
+# 命令行：/band 显式改档、/skill 技能与 invocation 列表（宿主 ctx.commands 缝）
+# 入口子路径 dsh-lean-router/router 需要 package.json exports 增补 "./router": "./lib/router.js"
+# （package.json 为共享文件，由 master 统一集成；见 lib/router.js ROUTER_INJECTION_NOTES.patchEntry）
+- insert:
+    - id: lean-router-router
+      name: dsh-lean-router/router
+      config:
+        hooks: true
+        commands: false
+        diligenceEvery: 10
+    - id: lean-router-commands
+      name: dsh-lean-router/router
+      config:
+        hooks: false
+        commands: true
+        # master 集成（票 07 §9.1）：审计落盘开；auditPath/weightsPath 省略 = 默认值
+        # （注意不能传空串：lib/router.js:145-149 对空串抛错，缺省语义见 §9.1 修正版）
+        audit: true

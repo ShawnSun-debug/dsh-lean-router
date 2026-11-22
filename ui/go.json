@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "composer": {
+    "quickActions": [
+      { "label": "审计面板", "action": { "type": "send", "text": "/lean-audit" } },
+      { "label": "得分表", "action": { "type": "send", "text": "/lean-audit scores" } },
+      { "label": "命中统计", "action": { "type": "send", "text": "/lean-audit stats" } },
+      { "label": "门控权重", "action": { "type": "send", "text": "/lean-audit weights" } }
+    ]
+  },
+  "emptyState": {
+    "suggestions": [
+      { "title": "看技能审计", "subtitle": "最近 10 条门控决策 + token 对比 + 黄条", "action": { "type": "send", "text": "/lean-audit" } },
+      { "title": "展开全量得分表", "subtitle": "31 技能逐行分数与命中信号", "action": { "type": "send", "text": "/lean-audit scores" } },
+      { "title": "查命中统计", "subtitle": "按技能×场景聚合命中/挂载/降级", "action": { "type": "send", "text": "/lean-audit stats" } },
+      { "title": "看门控权重", "subtitle": "assets/gating.weights.json 当前生效值与回退状态", "action": { "type": "send", "text": "/lean-audit weights" } }
+    ]
+  }
+}

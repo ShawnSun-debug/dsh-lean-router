@@ -1,0 +1,27 @@
+# 参照件（票 04）：验证 lean-router 预设的 Code Mode 遮蔽，形态参照上游
+# dsh-codemode 0.3.x fixtures/verify-codemode.patch.yml（main @ f9758ec1061a9a0af4f1dfefbacc19c5987b11d1）。
+#
+#   dsh --profile lean-router-verify --patch fixtures/verify-codemode.patch.yml --no-open --port 3099
+#
+# 两个动作：把 lean-router 设为新会话默认预设；在宿主层挂载本地假 MCP 服务器
+# fixtures/fake-mcp-server.mjs（上游样本原样副本，stdio、不联网、3 个工具）。
+# 宿主层注入 mcp__fake__* 到每个会话，是对遮蔽最难的场景；预期：3 个 mcp__fake__*
+# 工具不进模型工具列表，code_run 内可经 code_tools_search 发现并调用。
+#
+# 注：command/args 为安装位置相关的示例路径，安装后按实际环境调整（args 相对仓库根）。
+- id: agent-preset-registry
+  name: '@deepseek-ai/dsh-agent-preset-registry'
+  config:
+    default: lean-router
+
+- insert:
+    - id: mcp-fake
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: fake
+        transport: stdio
+        command: 'C:\Program Files\nodejs\node.exe'
+        args:
+          - 'fixtures/fake-mcp-server.mjs'
+        toolCallTimeoutMs: 20000
+        failOnStartupError: false

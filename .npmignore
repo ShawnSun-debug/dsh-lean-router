@@ -1,0 +1,14 @@
+# Publish excludes (package.json "files" is the primary whitelist; this is defense in depth)
+node_modules/
+.git/
+.github/
+.cscratch/
+fixtures/
+*.tgz
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+coverage/
+*.tsbuildinfo
+__pycache__/

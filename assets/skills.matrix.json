@@ -1,0 +1,311 @@
+{
+  "_meta": {
+    "decided_at": "2026-11-20T13:26:44.272Z",
+    "decided_by": "主人逐条拍板（ask_user_question，6 批 33 题）",
+    "source": "~/.dsh/skills（31 个 mattpocock 技能；pptx=宿主 office 自带、_shared=共享素材，不进矩阵）",
+    "keywords_policy": "先空着，实测后再填",
+    "counts": {
+      "both": 13,
+      "modelOnly": 10,
+      "userOnly": 8
+    }
+  },
+  "skills": [
+    {
+      "name": "ask-matt",
+      "dir": "ask-matt",
+      "model": false,
+      "user": true,
+      "scenario": "meta",
+      "scenarioZh": "元交互·路由",
+      "keywords": [],
+      "note": "技能路由器与本插件路由层重叠，主人点名才用"
+    },
+    {
+      "name": "chief-of-staff",
+      "dir": "chief-of-staff",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·统筹",
+      "keywords": []
+    },
+    {
+      "name": "code-review",
+      "dir": "code-review",
+      "model": true,
+      "user": true,
+      "scenario": "engineering",
+      "scenarioZh": "工程·评审",
+      "keywords": []
+    },
+    {
+      "name": "codebase-design",
+      "dir": "codebase-design",
+      "model": true,
+      "user": true,
+      "scenario": "engineering",
+      "scenarioZh": "工程·设计",
+      "keywords": []
+    },
+    {
+      "name": "diagnosing-bugs",
+      "dir": "diagnosing-bugs",
+      "model": true,
+      "user": false,
+      "scenario": "engineering",
+      "scenarioZh": "工程·诊断",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "domain-modeling",
+      "dir": "domain-modeling",
+      "model": true,
+      "user": false,
+      "scenario": "engineering",
+      "scenarioZh": "工程·建模",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "grilling",
+      "dir": "grilling",
+      "model": false,
+      "user": true,
+      "scenario": "meta",
+      "scenarioZh": "元交互·审讯",
+      "keywords": [],
+      "note": "重交互，主人点名才用"
+    },
+    {
+      "name": "handoff",
+      "dir": "handoff",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·交接",
+      "keywords": []
+    },
+    {
+      "name": "implement",
+      "dir": "implement",
+      "model": true,
+      "user": true,
+      "scenario": "engineering",
+      "scenarioZh": "工程·实现",
+      "keywords": []
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "dir": "improve-codebase-architecture",
+      "model": true,
+      "user": true,
+      "scenario": "engineering",
+      "scenarioZh": "工程·体检",
+      "keywords": []
+    },
+    {
+      "name": "loop-me",
+      "dir": "loop-me",
+      "model": false,
+      "user": true,
+      "scenario": "meta",
+      "scenarioZh": "元交互·工作流",
+      "keywords": [],
+      "note": "重交互，主人点名才用"
+    },
+    {
+      "name": "pr",
+      "dir": "pr",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·PR",
+      "keywords": []
+    },
+    {
+      "name": "prototype",
+      "dir": "prototype",
+      "model": false,
+      "user": true,
+      "scenario": "engineering",
+      "scenarioZh": "工程·原型",
+      "keywords": [],
+      "note": "主人选仅手动"
+    },
+    {
+      "name": "research",
+      "dir": "research",
+      "model": true,
+      "user": true,
+      "scenario": "research",
+      "scenarioZh": "调研·取证",
+      "keywords": []
+    },
+    {
+      "name": "retro",
+      "dir": "retro",
+      "model": false,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·复盘",
+      "keywords": [],
+      "note": "主人选仅手动"
+    },
+    {
+      "name": "setup-matt-pocock-skills",
+      "dir": "setup-matt-pocock-skills",
+      "model": true,
+      "user": false,
+      "scenario": "setup",
+      "scenarioZh": "配置·初始化",
+      "keywords": [],
+      "note": "主人理由：会话开始即在，仅模型"
+    },
+    {
+      "name": "setup-ts-deep-modules",
+      "dir": "setup-ts-deep-modules",
+      "model": true,
+      "user": false,
+      "scenario": "engineering",
+      "scenarioZh": "工程·配置",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "software-factory",
+      "dir": "software-factory",
+      "model": true,
+      "user": false,
+      "scenario": "process",
+      "scenarioZh": "流程·工厂",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "tdd",
+      "dir": "tdd",
+      "model": true,
+      "user": false,
+      "scenario": "engineering",
+      "scenarioZh": "工程·测试",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "teach",
+      "dir": "teach",
+      "model": false,
+      "user": true,
+      "scenario": "teaching",
+      "scenarioZh": "教学",
+      "keywords": [],
+      "note": "主人选仅手动"
+    },
+    {
+      "name": "to-questionnaire",
+      "dir": "to-questionnaire",
+      "model": true,
+      "user": false,
+      "scenario": "process",
+      "scenarioZh": "流程·问卷",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "to-spec",
+      "dir": "to-spec",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·定稿",
+      "keywords": []
+    },
+    {
+      "name": "to-tickets",
+      "dir": "to-tickets",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·拆票",
+      "keywords": []
+    },
+    {
+      "name": "triage",
+      "dir": "triage",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·分诊",
+      "keywords": []
+    },
+    {
+      "name": "wait-what",
+      "dir": "wait-what",
+      "model": false,
+      "user": true,
+      "scenario": "meta",
+      "scenarioZh": "元交互·打断",
+      "keywords": [],
+      "note": "主人选仅手动"
+    },
+    {
+      "name": "wayfinder",
+      "dir": "wayfinder",
+      "model": true,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·大规划",
+      "keywords": []
+    },
+    {
+      "name": "wizard",
+      "dir": "wizard",
+      "model": false,
+      "user": true,
+      "scenario": "process",
+      "scenarioZh": "流程·向导",
+      "keywords": [],
+      "note": "主人选仅手动"
+    },
+    {
+      "name": "writing-beats",
+      "dir": "writing-beats",
+      "model": true,
+      "user": true,
+      "scenario": "writing",
+      "scenarioZh": "写作·成稿",
+      "keywords": []
+    },
+    {
+      "name": "writing-for-agents",
+      "dir": "writing-for-agents",
+      "model": true,
+      "user": false,
+      "scenario": "writing",
+      "scenarioZh": "写作·技能文档",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "writing-fragments",
+      "dir": "writing-fragments",
+      "model": true,
+      "user": false,
+      "scenario": "writing",
+      "scenarioZh": "写作·碎片",
+      "keywords": [],
+      "note": "主人选仅模型"
+    },
+    {
+      "name": "writing-shape",
+      "dir": "writing-shape",
+      "model": true,
+      "user": false,
+      "scenario": "writing",
+      "scenarioZh": "写作·打磨",
+      "keywords": []
+    }
+  ]
+}

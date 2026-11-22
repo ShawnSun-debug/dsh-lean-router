@@ -1,0 +1,47 @@
+# dsh-lean-router 预设行模板（票 02 骨架；由 scripts/build-bundle.mjs 组装成 cordis.patch.yml）
+# TODO(ticket-03 lean 层)：compaction 0.25/20000、tool-result pruner 4096/1024、关 6 插件、lean13/balance3 persona、plan-mode v1、delivery-gate、glob/grep 并发标记
+# TODO(ticket-04 工具遮蔽层)：codemode executor 遮蔽行 + code_run 传输 + meta 4 工具 + 常驻 ptc-runtime
+# TODO(ticket-05 路由层)：首轮 inbox.claim 捕获 + [router] band/task 分类指令 + pre-step 近场引导 + 3 软门 + /band
+# TODO(ticket-06 技能门控层)：skill provider rank 配置 + 每轮评分放行 + 8k 软降级 + 审计
+- insert:
+    - id: preset-lean-router
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: lean-router
+        name: Lean router
+        description: "lean 省 token × 思考链路由 × code_run 遮蔽 × mattpocock 技能自动调用（v1.0.0 骨架）"
+        order: 30
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: You are a coding agent powered by the {{model}} model.
+              # TODO(ticket-03/05): suffix 填充 lean 纪律双档 + 3 软门 + 首轮 [router] 分类指令
+              suffix: |-
+                - （骨架占位：lean 纪律与路由分类指令由票 03/05 填充，安装前请勿使用本预设）
+          - id: agent-instructions
+            name: '@deepseek-ai/dsh-agent-instructions'
+            config:
+              maxBytes: 65536
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+          - id: tool-jobs
+            name: '@deepseek-ai/dsh-tool-jobs'
+          - id: skill-filesystem
+            name: '@deepseek-ai/dsh-skill-filesystem'
+          - id: skill-lean-router
+            name: dsh-lean-router
+          - id: tool-skill
+            name: '@deepseek-ai/dsh-tool-skill'
+          - id: command-goal
+            name: '@deepseek-ai/dsh-command-goal'
+          - id: tool-goal
+            name: '@deepseek-ai/dsh-tool-goal'

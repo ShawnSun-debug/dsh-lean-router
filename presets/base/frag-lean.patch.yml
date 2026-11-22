@@ -1,0 +1,440 @@
+# dsh-lean-router · frag-lean.patch.yml —— 票 03 lean 层（机制 1-4 + plan-mode v1 + 交付门 + 并发标记）
+# 本分片由 build 脚本按固定顺序续接到顶层 YAML 块序列（scripts/build-bundle.mjs：base 后按
+# frag-lean → frag-toolface → frag-router 合并）；顶层为块序列续项，多操作形态参照上游
+# flash-presets/cordis.patch.yml（多个 - insert: 块 + 裸 - id: 调优行）。
+# 合并语义依据（宿主 dsh-app-boot/lib/index.js applyPatches L506-556）：
+#   - 无 id 的 - insert: = 顶层追加新行；
+#   - 裸 - id: 行 = 按 id 寻址已有行，supplied 字段整体替换（config 整键替换，plugins 数组
+#     因此整表重声明）→ 本分片第一行用裸覆写行给主模板的 preset-lean-router 重声明完整 config；
+#   - 合并复验由 master 用宿主 --dump-config 做（本票只保证分片形态与模块同源）。
+# 数据同源：persona 双档文本 = lib/lean/persona-text.js；plan-mode v1 = lib/lean/plan-mode.js；
+# 关 6 插件清单 = lib/lean/disabled.js；压缩/裁剪口径 = lib/lean/compaction.js 与 pruner.js。
+
+# ============ 裸覆写行：preset-lean-router（lean 档 13 条）============
+
+- id: preset-lean-router
+  name: '@deepseek-ai/dsh-agent-preset'
+  config:
+    id: lean-router
+    name: Lean router
+    description: "lean 省 token × 思考链路由 × code_run 遮蔽 × mattpocock 技能自动调用（lean 档：13 条纪律 + 3 软门 + 自检题钩子）。"
+    order: 30
+    plugins:
+      # 机制 4 · 行为纪律（persona 双档；lean 档 13 条硬规则 + 3 软门 + 自检题钩子）
+      # 上游：flash-lean-ptc-v3.patch.yml L15-60；suffix 末行留票 05 路由拼接占位。
+      - id: persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: "You are a coding agent powered by the {{model}} model."
+          # 纪律双档（lean 13 / balance 3）由 lib/lean/persona-text.js 生成，与模块保持同源。
+          suffix: |-
+            LEAN OPERATING RULES (hard constraints; they override habit and tool default wording):
+
+            BUDGET FIRST
+            1. Turn budget, not step budget. Target <=20 turns; turns are the measured cost (folding many calls
+               into one turn is cheap, thrashing across turns is expensive). If a task passes 3x the expected
+               turns (~60), stop and re-plan instead of repeating the same loop.
+            2. Deliberate briefly. Do not enumerate an exhaustive design before acting: one short
+               deliberation, then run one cheap probe/command to learn the facts. Acting beats more planning.
+            3. Input/answer-type tasks (submit a file or an answer): produce the SMALLEST artifact that
+               satisfies the stated constraints first; refine only while you are under the turn budget.
+            4. Gate before delivery, not after. If the task states hidden tests, a judge, or hard limits
+               (time/memory/output), run ONE consolidated acceptance pass over every stated criterion at once (all
+               samples, edge cases, largest legal scale) and quote the measured numbers; measure hard limits with
+               the command the judge would use (/usr/bin/time -v, ulimit -v, ...), and treat over-limit as a failure
+               even when the answer is otherwise correct. Otherwise ONE consolidated check per deliverable is enough:
+               do not verify claim by claim, do not re-run a check that already passed, and name what you did not
+               verify. Once the gate passes, stop testing and deliver: do not add extra randomized or stress rounds unless the gate itself failed.
+
+            5. Tool choice. Inspect files with read/glob/grep; never use the shell to browse a file
+               (no cat/head/tail/sed -n/find/ls -R); piping a command's own output through head is fine.
+            6. Output budget. Batch independent calls into one step. Pipe or redirect long output
+               (| head -40; redirect to "$env:TEMP/out.log" in PowerShell, %TEMP%\out.log in cmd, /tmp/out.log on POSIX).
+               Never print a dump you could grep.
+            7. Programmatic tool mode, adaptively. Fold 3+ independent calls of one logical step into ONE
+               run_code program; a single-call step may still go through a one-line program so its noise stays
+               out of context. Measured: folding pays off on multi-file/repo work (up to 8x fewer turns, 2-8x
+               less wall clock) and is neutral on single-file algorithm tasks - there spend the budget on
+               reasoning and testing, not on batching.
+            8. Context discipline (biggest measured lever). Read only what is new; rebuild derived
+               answers from files with grep/scripts instead of re-reading them into context. Keep NOTES
+               short and factual (<=60 lines).
+            9. Author incrementally: create a file once (skeleton), then extend it with edit. Never
+               re-emit an unchanged file. After two failed shell patches, switch to the editor.
+
+            SAFETY
+            10. Answer in the user's language. Honour scope literally (new project => do not read or
+                copy old-project files). Use subagents only when the user asks or the harness delegates; never spawn them to look busy.
+            11. Never put secrets, tokens or private raw material into the session; reference by path.
+
+            WHEN BLOCKED
+            12. If two attempts at the same approach fail, change approach once; if that also fails, report the
+                blocker with the exact command and observed output instead of continuing.
+            13. Route awareness: running on provider "{{provider}}" with model "{{model}}". On a high-latency route
+                prefer fewer, larger turns; on a low-latency route more probing is affordable. Never trade
+                correctness for turn count.
+
+            SOFT GATES (clarify -> plan -> deliver; each is one pause, never a stall)
+            - CLARIFY: if goal, scope, or acceptance is ambiguous in a way that changes the result, ask one consolidated question round before acting; when a cheap read/probe settles it, probe instead of asking.
+            - PLAN: work touching more than one file or more than ~8 steps starts from a numbered plan with a check per step; single-file small changes skip this gate.
+            - DELIVER: run ONE consolidated acceptance pass over every stated criterion, quote measured numbers, name what was not verified, then stop (rule 4 is this gate's detail).
+
+            SELF-CHECK HOOKS (questions answered to yourself; speak up only when a check fails)
+            - Diligence (~every 10 turns): what changed since the last check, and is this still the shortest path to done? If not, re-plan; do not repeat the loop.
+            - Close-the-book: could I redo the last step with the AI closed - do I actually know this fact, command, or path, or would I have to look it up again? If look-up, fetch it from the source of truth now instead of trusting recall.
+
+            # [ticket-05] 路由分类指令由票 05 拼接（本行为占位：集成时替换为票 05 的 ROUTER_PROMPT 常量）
+      - id: agent-instructions
+        name: '@deepseek-ai/dsh-agent-instructions'
+        config:
+          maxBytes: 65536
+      # 平台互斥（!!js 表达式，上游 lean/balance 两档同形）
+      - id: tool-bash
+        name: '@deepseek-ai/dsh-tool-bash'
+        disabled: !!js process.platform === 'win32'
+      - id: tool-pwsh
+        name: '@deepseek-ai/dsh-tool-pwsh'
+        disabled: !!js process.platform !== 'win32'
+      - id: tool-fs
+        name: '@deepseek-ai/dsh-tool-fs'
+      # 上游 lean 口径：超上限不抽样、直接报告（flash-lean-ptc-v3.patch.yml L73-76；codemode/cordis.patch.yml L50-53 同值）
+      - id: tool-fs-search
+        name: '@deepseek-ai/dsh-tool-fs-search'
+        config:
+          sampleOverCapGlobResults: false
+      - id: tool-jobs
+        name: '@deepseek-ai/dsh-tool-jobs'
+      - id: skill-filesystem
+        name: '@deepseek-ai/dsh-skill-filesystem'
+      - id: skill-lean-router
+        name: dsh-lean-router
+      - id: tool-skill
+        name: '@deepseek-ai/dsh-tool-skill'
+      - id: command-goal
+        name: '@deepseek-ai/dsh-command-goal'
+      - id: tool-goal
+        name: '@deepseek-ai/dsh-tool-goal'
+      # plan-mode v1 并入（上游 flash-lean-ptc-v3.patch.yml L87-107；section 文本 = lib/lean/plan-mode.js）
+      - id: planning
+        name: cordis:group
+        group: true
+        isolate:
+          planMode: true
+        config:
+          - id: plan-mode
+            name: '@deepseek-ai/dsh-plan-mode'
+            config:
+              section: |-
+                You are in plan mode. Stay in plan mode until exit_plan_mode succeeds or the user switches the session mode. Imperative language to implement changes means plan the implementation, not execute it. A user's conversational agreement — including an answer confirming something you asked — approves nothing and does not end plan mode; fold the confirmed decision into the plan and submit it through exit_plan_mode.
+
+                Explore first. Use non-mutating reads, searches, static analysis, and checks to ground the plan in the actual repository. Do not edit or write files, change configuration, run formatters or code generation that rewrites tracked files, commit, or otherwise carry out the plan. Prefer existing functions and patterns over new machinery.
+
+                The tool catalog stays the same across modes for request-cache stability. These plan-mode rules override any later tool description or guidance that suggests using mutation tools; those tools remain listed to keep the tool catalog unchanged. Do not use todo_write to track this planning phase: it tracks implementation after an approved plan, while the plan itself belongs in exit_plan_mode.
+
+                Resolve discoverable facts by inspection. Use ask_user_question only for user-owned choices or material ambiguity that inspection cannot answer. Do not ask the user where code lives or how current behavior works when you can find out.
+
+                Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
+
+                When ready, call exit_plan_mode with the complete plan markdown, starting with a # title. Make exit_plan_mode the only and final tool call in that assistant response: it presents the plan for approval, and implementation begins only in a later step after approval. Do not paste the final plan as a plain reply or ask "should I proceed?" through prose or ask_user_question. If review rejects it, incorporate the feedback and present again. If the review channel is unavailable, stay in plan mode and ask the user to switch modes manually; do not proceed with implementation. If a review (or an ask_user_question) is aborted or times out, that is not a rejection either: do not resubmit on your own and do not switch modes yourself - tell the user it timed out and wait. Under programmatic tool mode exit_plan_mode (and ask_user_question) is reached through run_code: make it the program's only call and pass timeoutMs: 600000, because the run_code deadline includes the time the user spends reading the plan.
+      # 机制 1 + 机制 2（compaction 组；isolate 与上游一致；先裁剪再压缩的顺序由宿主保证）
+      - id: compaction
+        name: cordis:group
+        group: true
+        isolate:
+          compaction: true
+          toolResultPruner: true
+        config:
+          # FLASH TUNING（上游注释原文）：该路由声明 1,000,000 窗口，dsh 默认 0.8 要到 800k 才压缩。
+          # 本预设取 0.25（250k 触发）/ 保留 20000 近期轮次。2026-11-09 实测：109 个运行
+          # 的上下文峰值中位 20k、p90 34k、最大 126k —— 250k 从未触发，这颗旋钮目前是
+          # 安全网而不是降本手段；真正压上下文的是 tool-result-pruner。
+          - id: compaction-basic
+            name: '@deepseek-ai/dsh-compaction-basic'
+            config:
+              thresholdRatio: 0.25
+              retainTokens: 20000
+              compactionRetries: 1
+              auto: true
+          - id: command-compact
+            name: '@deepseek-ai/dsh-command-compact'
+          # 裁剪口径 8192/4096/1024（上游 L129-133；不变量 head+marker+tail<=threshold 已由 lib/lean/pruner.js 复核）
+          - id: tool-result-pruner
+            name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+            config:
+              thresholdChars: 8192
+              headChars: 4096
+              tailChars: 1024
+      # 委派组（isolate workflowEngine；活跃三件 + 机制 3 关 6 插件清单，逐行照抄上游 L134-182）
+      - id: delegation
+        name: cordis:group
+        group: true
+        isolate:
+          workflowEngine: true
+        config:
+          - id: tool-subagent-control
+            name: '@deepseek-ai/dsh-tool-subagent-control'
+          - id: tool-subagent
+            name: '@deepseek-ai/dsh-tool-subagent'
+            config:
+              provider: spawn
+              toolName: subagent
+              modelSelectionSettings: true   # DSH <=0.2.1 的旧名（上游注释）
+              modelSelection: true           # DSH >=0.2.2：能不能选模型
+              modelDiscovery: true           # DSH >=0.2.2：能不能列可选模型
+          - id: tool-subagent-fork
+            name: '@deepseek-ai/dsh-tool-subagent'
+            config:
+              provider: fork
+              toolName: subagent_fork
+          # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+          - id: tool-subagent-codex
+            name: "@deepseek-ai/dsh-tool-subagent"
+            disabled: true
+            config:
+              provider: "codex"
+              toolName: "subagent_codex"
+              maxDepth: "provider-managed"
+          # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+          - id: tool-subagent-claude-code
+            name: "@deepseek-ai/dsh-tool-subagent"
+            disabled: true
+            config:
+              provider: "claude-code"
+              toolName: "subagent_claude_code"
+              maxDepth: "provider-managed"
+          # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+          - id: workflow-ptc
+            name: "@deepseek-ai/dsh-workflow-ptc"
+            disabled: true
+            config:
+              provider: "spawn"
+          # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+          - id: tool-workflow
+            name: "@deepseek-ai/dsh-tool-workflow"
+            disabled: true
+          # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+          - id: tool-ralph
+            name: "@deepseek-ai/dsh-tool-ralph"
+            disabled: true
+            config:
+              subagentProvider: "spawn"
+              maxRounds: 64
+      - id: tool-ask-user
+        name: '@deepseek-ai/dsh-tool-ask-user'
+      - id: tool-todo
+        name: '@deepseek-ai/dsh-tool-todo'
+        config:
+          allowParallelInProgress: true
+      - id: tool-web
+        name: '@deepseek-ai/dsh-tool-web'
+        config:
+          fetch: true
+          searchTimeoutMs: 60000
+      - id: present
+        name: '@deepseek-ai/dsh-tool-present'
+      # 机制 3 · 第六件：插件管理工具（预设顶层，上游 L200-202）
+      - id: tool-plugin-manager
+        name: '@deepseek-ai/dsh-plugin-manager/tools'
+        disabled: true
+
+# ============ 新增行：preset-lean-router-balance（balance 档 3 条；上游双预设形态，flash-lean-ptc-v3-balance 同构）============
+
+- insert:
+  - id: preset-lean-router-balance
+    name: '@deepseek-ai/dsh-agent-preset'
+    config:
+      id: lean-router-balance
+      name: "Lean router (balance)"
+      description: "约束较弱的精简档（balance 3 条纪律），适用于需要模型发挥的场景。"
+      order: 29
+      plugins:
+        # 机制 4 · 行为纪律（persona 双档；lean 档 13 条硬规则 + 3 软门 + 自检题钩子）
+        # 上游：flash-lean-ptc-v3.patch.yml L15-60；suffix 末行留票 05 路由拼接占位。
+        - id: persona
+          name: '@deepseek-ai/dsh-persona'
+          config:
+            prefix: "You are a coding agent powered by the {{model}} model."
+            # 纪律双档（lean 13 / balance 3）由 lib/lean/persona-text.js 生成，与模块保持同源。
+            suffix: |-
+              CORE RULES (only what the harness cannot enforce for you):
+              1. Answer in the user scope. Honour the requested language and the stated scope literally; do not read or copy files outside it.
+              2. Never put secrets, tokens or private raw material into the session; reference them by path.
+              3. If two attempts at the same approach fail, change approach once; if that also fails, report the blocker with the exact command and the observed output instead of continuing.
+
+              # [ticket-05] 路由分类指令由票 05 拼接（本行为占位：集成时替换为票 05 的 ROUTER_PROMPT 常量）
+        - id: agent-instructions
+          name: '@deepseek-ai/dsh-agent-instructions'
+          config:
+            maxBytes: 65536
+        # 平台互斥（!!js 表达式，上游 lean/balance 两档同形）
+        - id: tool-bash
+          name: '@deepseek-ai/dsh-tool-bash'
+          disabled: !!js process.platform === 'win32'
+        - id: tool-pwsh
+          name: '@deepseek-ai/dsh-tool-pwsh'
+          disabled: !!js process.platform !== 'win32'
+        - id: tool-fs
+          name: '@deepseek-ai/dsh-tool-fs'
+        # 上游 lean 口径：超上限不抽样、直接报告（flash-lean-ptc-v3.patch.yml L73-76；codemode/cordis.patch.yml L50-53 同值）
+        - id: tool-fs-search
+          name: '@deepseek-ai/dsh-tool-fs-search'
+          config:
+            sampleOverCapGlobResults: false
+        - id: tool-jobs
+          name: '@deepseek-ai/dsh-tool-jobs'
+        - id: skill-filesystem
+          name: '@deepseek-ai/dsh-skill-filesystem'
+        - id: skill-lean-router
+          name: dsh-lean-router
+        - id: tool-skill
+          name: '@deepseek-ai/dsh-tool-skill'
+        - id: command-goal
+          name: '@deepseek-ai/dsh-command-goal'
+        - id: tool-goal
+          name: '@deepseek-ai/dsh-tool-goal'
+        # plan-mode v1 并入（上游 flash-lean-ptc-v3.patch.yml L87-107；section 文本 = lib/lean/plan-mode.js）
+        - id: planning
+          name: cordis:group
+          group: true
+          isolate:
+            planMode: true
+          config:
+            - id: plan-mode
+              name: '@deepseek-ai/dsh-plan-mode'
+              config:
+                section: |-
+                  You are in plan mode. Stay in plan mode until exit_plan_mode succeeds or the user switches the session mode. Imperative language to implement changes means plan the implementation, not execute it. A user's conversational agreement — including an answer confirming something you asked — approves nothing and does not end plan mode; fold the confirmed decision into the plan and submit it through exit_plan_mode.
+
+                  Explore first. Use non-mutating reads, searches, static analysis, and checks to ground the plan in the actual repository. Do not edit or write files, change configuration, run formatters or code generation that rewrites tracked files, commit, or otherwise carry out the plan. Prefer existing functions and patterns over new machinery.
+
+                  The tool catalog stays the same across modes for request-cache stability. These plan-mode rules override any later tool description or guidance that suggests using mutation tools; those tools remain listed to keep the tool catalog unchanged. Do not use todo_write to track this planning phase: it tracks implementation after an approved plan, while the plan itself belongs in exit_plan_mode.
+
+                  Resolve discoverable facts by inspection. Use ask_user_question only for user-owned choices or material ambiguity that inspection cannot answer. Do not ask the user where code lives or how current behavior works when you can find out.
+
+                  Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
+
+                  When ready, call exit_plan_mode with the complete plan markdown, starting with a # title. Make exit_plan_mode the only and final tool call in that assistant response: it presents the plan for approval, and implementation begins only in a later step after approval. Do not paste the final plan as a plain reply or ask "should I proceed?" through prose or ask_user_question. If review rejects it, incorporate the feedback and present again. If the review channel is unavailable, stay in plan mode and ask the user to switch modes manually; do not proceed with implementation. If a review (or an ask_user_question) is aborted or times out, that is not a rejection either: do not resubmit on your own and do not switch modes yourself - tell the user it timed out and wait. Under programmatic tool mode exit_plan_mode (and ask_user_question) is reached through run_code: make it the program's only call and pass timeoutMs: 600000, because the run_code deadline includes the time the user spends reading the plan.
+        # 机制 1 + 机制 2（compaction 组；isolate 与上游一致；先裁剪再压缩的顺序由宿主保证）
+        - id: compaction
+          name: cordis:group
+          group: true
+          isolate:
+            compaction: true
+            toolResultPruner: true
+          config:
+            # FLASH TUNING（上游注释原文）：该路由声明 1,000,000 窗口，dsh 默认 0.8 要到 800k 才压缩。
+            # 本预设取 0.25（250k 触发）/ 保留 20000 近期轮次。2026-11-09 实测：109 个运行
+            # 的上下文峰值中位 20k、p90 34k、最大 126k —— 250k 从未触发，这颗旋钮目前是
+            # 安全网而不是降本手段；真正压上下文的是 tool-result-pruner。
+            - id: compaction-basic
+              name: '@deepseek-ai/dsh-compaction-basic'
+              config:
+                thresholdRatio: 0.25
+                retainTokens: 20000
+                compactionRetries: 1
+                auto: true
+            - id: command-compact
+              name: '@deepseek-ai/dsh-command-compact'
+            # 裁剪口径 8192/4096/1024（上游 L129-133；不变量 head+marker+tail<=threshold 已由 lib/lean/pruner.js 复核）
+            - id: tool-result-pruner
+              name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+              config:
+                thresholdChars: 8192
+                headChars: 4096
+                tailChars: 1024
+        # 委派组（isolate workflowEngine；活跃三件 + 机制 3 关 6 插件清单，逐行照抄上游 L134-182）
+        - id: delegation
+          name: cordis:group
+          group: true
+          isolate:
+            workflowEngine: true
+          config:
+            - id: tool-subagent-control
+              name: '@deepseek-ai/dsh-tool-subagent-control'
+            - id: tool-subagent
+              name: '@deepseek-ai/dsh-tool-subagent'
+              config:
+                provider: spawn
+                toolName: subagent
+                modelSelectionSettings: true   # DSH <=0.2.1 的旧名（上游注释）
+                modelSelection: true           # DSH >=0.2.2：能不能选模型
+                modelDiscovery: true           # DSH >=0.2.2：能不能列可选模型
+            - id: tool-subagent-fork
+              name: '@deepseek-ai/dsh-tool-subagent'
+              config:
+                provider: fork
+                toolName: subagent_fork
+            # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+            - id: tool-subagent-codex
+              name: "@deepseek-ai/dsh-tool-subagent"
+              disabled: true
+              config:
+                provider: "codex"
+                toolName: "subagent_codex"
+                maxDepth: "provider-managed"
+            # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+            - id: tool-subagent-claude-code
+              name: "@deepseek-ai/dsh-tool-subagent"
+              disabled: true
+              config:
+                provider: "claude-code"
+                toolName: "subagent_claude_code"
+                maxDepth: "provider-managed"
+            # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+            - id: workflow-ptc
+              name: "@deepseek-ai/dsh-workflow-ptc"
+              disabled: true
+              config:
+                provider: "spawn"
+            # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+            - id: tool-workflow
+              name: "@deepseek-ai/dsh-tool-workflow"
+              disabled: true
+            # 机制 3 · 关插件（上游 flash-lean-ptc-v3.patch.yml 对应行；复核见 docs/复核-关插件清单.md）
+            - id: tool-ralph
+              name: "@deepseek-ai/dsh-tool-ralph"
+              disabled: true
+              config:
+                subagentProvider: "spawn"
+                maxRounds: 64
+        - id: tool-ask-user
+          name: '@deepseek-ai/dsh-tool-ask-user'
+        - id: tool-todo
+          name: '@deepseek-ai/dsh-tool-todo'
+          config:
+            allowParallelInProgress: true
+        - id: tool-web
+          name: '@deepseek-ai/dsh-tool-web'
+          config:
+            fetch: true
+            searchTimeoutMs: 60000
+        - id: present
+          name: '@deepseek-ai/dsh-tool-present'
+        # 机制 3 · 第六件：插件管理工具（预设顶层，上游 L200-202）
+        - id: tool-plugin-manager
+          name: '@deepseek-ai/dsh-plugin-manager/tools'
+          disabled: true
+
+# ============ 新增行：交付门（加料件）============
+# 默认关闭（enabled: false）：它会执行工作区里的验收脚本，要用户显式打开
+# （上游 cordis.patch.yml L392-400 同口径）。插件实现 = lib/lean/delivery-gate.js；
+# 插件行 name 为包内子路径，需 package.json exports 增加 ./lean/delivery-gate（master 集成）。
+
+- insert:
+  - id: lean-delivery-gate
+    name: 'dsh-lean-router/lean/delivery-gate'
+    config:
+      enabled: false
+      maxRounds: 2
+
+# ============ 新增行：glob/grep 只读并发标记（加料件）============
+# 默认开启；关闭优先级从高到低：DSH_LEAN_ROUTER_CONCURRENCY=0（兼容 DSH_FLASH_PRESETS_CONCURRENCY=0）
+# > 本行 config.toolConcurrency.enabled=false > 默认开启。插件实现 = lib/lean/tool-concurrency.js；
+# 插件行 name 为包内子路径，需 package.json exports 增加 ./lean/tool-concurrency（master 集成）。
+
+- insert:
+  - id: lean-concurrency
+    name: 'dsh-lean-router/lean/tool-concurrency'
+    config:
+      toolConcurrency:
+        enabled: true
